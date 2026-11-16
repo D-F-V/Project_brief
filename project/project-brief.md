@@ -144,3 +144,14 @@ Se respetarán la atribución y las condiciones de la licencia. No se intentará
 - Licencia: https://opendatacommons.org/licenses/odbl/1-0/
 - Artículo asociado: https://doi.org/10.1177/23998083241242844
 - Materiales de las sesiones 2–5: adquisición, calidad, análisis exploratorio y preparación de variables.
+
+## Notebook de apoyo
+
+La carga de los datos y la revisión inicial de su calidad están
+documentadas en [exploracion_madrid.ipynb](../exploracion_madrid.ipynb).
+
+Incluye la procedencia, las dimensiones del dataset, los periodos
+disponibles y comprobaciones de valores ausentes, identificadores
+repetidos y posibles anomalías.
+
+La limpieza definitiva todavía está pendiente.
