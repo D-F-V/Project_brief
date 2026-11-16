@@ -2,156 +2,120 @@
 
 ## 1. Resumen del proyecto
 
-Este proyecto analizará los precios anunciados de viviendas en venta en Madrid durante 2018 utilizando el conjunto de datos abierto `idealista18`, limitado a `Madrid_Sale`. El objetivo es identificar cómo se relacionan las características de las viviendas y su localización con el precio anunciado por metro cuadrado.
+El proyecto analiza los precios anunciados de viviendas en venta en Madrid durante los cuatro trimestres de 2018 mediante `Madrid_Sale`, del dataset abierto `idealista18`. Busca ayudar a una agencia inmobiliaria ficticia a seleccionar comparables y detectar anuncios cuyo precio por metro cuadrado merece revisión.
 
-La solución propuesta combina un dashboard para explorar segmentos del mercado y un modelo predictivo que estime el precio anunciado por metro cuadrado. Su destinatario será el responsable de valoraciones de una agencia inmobiliaria ficticia.
+La solución principal será un dashboard de gestión; posteriormente se añadirá un modelo predictivo como referencia complementaria. El trabajo es histórico: los precios son de oferta, no de operaciones cerradas, y no permiten recomendar precios actuales. Se mantendrá la misma fuente durante el proyecto.
 
-El análisis se plantea como un ejercicio histórico. Los precios corresponden a anuncios, no a operaciones cerradas, y los resultados no representan el mercado actual.
+## 2. Organización, responsable y decisión
 
-## 2. Contexto de negocio y decisión
+**Madrid Vivienda Analytics** es una agencia ficticia dedicada a la intermediación residencial. Su equipo de valoraciones y captación necesita justificar las recomendaciones de precio con criterios consistentes. El responsable de valoraciones consultaría el dashboard semanalmente y podría seleccionar comparables y solicitar la revisión de anuncios; la decisión final seguiría siendo humana.
 
-La organización propuesta es **Madrid Vivienda Analytics**, una agencia inmobiliaria ficticia interesada en mejorar la comparación de inmuebles y la revisión de sus precios de salida.
+**Con esta herramienta, el responsable decidirá qué viviendas necesitan una revisión de su precio anunciado por m² frente a inmuebles comparables antes de recomendar un precio de salida.**
 
-El departamento destinatario será el equipo de valoraciones y captación. Su responsable consultaría el dashboard semanalmente en un escenario operativo, aunque este prototipo utilizará datos históricos estáticos.
+Esto apoya una estrategia de valoraciones trazables. También afecta a agentes, propietarios y compradores: una referencia poco representativa puede generar expectativas equivocadas. Las restricciones son el calendario académico, las herramientas gratuitas, la ausencia de precios de cierre y la información incompleta sobre negociación y estado interior.
 
-La decisión que se quiere apoyar es:
+La alternativa es seleccionar comparables manualmente en una hoja de cálculo. Es sencilla, pero cuesta repetir los mismos filtros y documentar las decisiones. El dashboard facilitará esa consistencia; no se presupone que mejore los resultados hasta evaluarlo.
 
-> ¿Qué viviendas presentan un precio anunciado por metro cuadrado alejado del de inmuebles comparables y deberían revisarse antes de recomendar un precio de salida?
-
-El dashboard permitirá seleccionar viviendas comparables según periodo, superficie, características y localización. El modelo ofrecerá una referencia adicional, que deberá interpretarse junto con el conocimiento del agente.
-
-Los principales límites serán el calendario académico, el uso de herramientas gratuitas, la ausencia de precios de cierre y la falta de información sobre negociación, reformas interiores y condiciones particulares de venta. Las recomendaciones requerirán revisión humana.
-
-## 3. Dataset card
+## 3. Ficha del dataset
 
 | Campo | Descripción |
 |---|---|
-| Nombre | `idealista18`: subconjunto `Madrid_Sale` |
-| Fuente | Repositorio de paezha, elaborado con anuncios de idealista y enriquecimiento catastral |
-| URL | https://github.com/paezha/idealista18 |
-| Licencia declarada | Open Database License, ODbL 1.0 |
-| Enlace de licencia | https://opendatacommons.org/licenses/odbl/1-0/ |
-| Archivo seleccionado | `data/Madrid_Sale.rda` |
-| Formato | RDA; se convertirá a un formato tabular para el análisis |
-| Periodo | Cuatro trimestres de 2018 |
-| Volumen documentado | 94.815 registros y 42 variables, incluida la geometría |
-| Tamaño aproximado | 6,74 MB para el archivo RDA |
-| Unidad de observación | Registro de una vivienda anunciada; un mismo inmueble puede aparecer varias veces |
-| Identificador | `ASSETID`; no se asumirá que identifica de forma única cada fila |
-| Variable temporal | `PERIOD`, con códigos trimestrales |
-| Dimensiones categóricas | Periodo, terraza, ascensor, localización interior/exterior y equipamiento |
-| Medidas numéricas | Precio anunciado, superficie construida y precio por metro cuadrado |
-| Variable objetivo | `UNITPRICE`, precio anunciado en €/m² |
-| Diccionario | README y documentación del repositorio |
-| Fecha y versión de descarga | Pendientes; se registrarán junto con el commit de origen |
-| Fuentes adicionales | No se incorporarán fuentes externas en esta primera fase |
+| Nombre | `idealista18`, objeto `Madrid_Sale` |
+| Publicador y URL | Repositorio de Antonio Páez y colaboradores: https://github.com/paezha/idealista18; anuncios procedentes de idealista, enriquecidos con información catastral y geográfica |
+| Licencia | Open Database License, ODbL 1.0, declarada en el README: https://opendatacommons.org/licenses/odbl/1-0/ |
+| Versión | Commit `e9ef80618f8a9cc28f672ac138f298bbd519918e` |
+| Fecha registrada en el notebook | 27/10/2026, 15:06 UTC; calculada a partir de la modificación del archivo descargado, no como fecha de publicación |
+| Archivo fuente | `data/Madrid_Sale.rda` en el repositorio de origen |
+| Formato de trabajo | [CSV tabular](data/Madrid_Sale_original.csv) generado desde RDA, 20.254.073 bytes (20,25 MB); se conserva el original como referencia |
+| Grano | Una fila es un registro de anuncio; varias filas pueden compartir identificador de inmueble y trimestre |
+| Periodo | Primer a cuarto trimestre de 2018, codificados como `201803`, `201806`, `201809`, `201812` |
+| Tamaño verificado en el notebook | 94.815 filas × 42 columnas; RDA de 6.738.247 bytes (6,74 MB). Sin `geometry`: 41 columnas |
+| Dimensiones categóricas | `HASTERRACE` y `HASLIFT`: 0 = no, 1 = sí; `FLATLOCATIONID`: 1 = exterior, 2 = interior. También trimestre y equipamiento |
+| Medidas | `PRICE` en euros, `CONSTRUCTEDAREA` en m² y `UNITPRICE` en €/m² |
+| Objetivo candidato | `UNITPRICE`, precio anunciado por m² |
+| Documentación | README y `man/Madrid_Sale.Rd` de la versión indicada |
+| Calidad detectada | Nulos en cuatro columnas; identificadores repetidos; valores extremos y posibles anomalías geográficas |
+| Fuentes adicionales | Ninguna en esta fase; no se presupone una columna de barrio |
 
-Las cifras anteriores proceden de la documentación y se verificarán al cargar el archivo. El dataset supera documentalmente el mínimo de 5.000 registros y cubre los cuatro trimestres de un año. No permite estudiar estacionalidad de varios años.
+## 4. Evidencias y preparación
 
-## 4. Calidad y preparación de los datos
+El [notebook de exploración](../exploracion_madrid.ipynb) conserva código, salidas y procedencia. La carga muestra 94.815 registros, superiores al mínimo de 5.000, y cuatro trimestres completos. Los indicadores binarios permiten al menos tres dimensiones categóricas; precio y superficie aportan las medidas requeridas.
 
-Antes de limpiar se comprobarán dimensiones, tipos, valores ausentes, duplicados y rangos. También se verificará la distribución de registros por trimestre y la repetición de `ASSETID`.
+Se han encontrado **75.804 identificadores distintos y cero duplicados exactos**. Hay 13.829 identificadores repetidos, que ocupan 32.840 filas. En esta versión, cada identificador aparece en un solo trimestre. Aunque el README contempla repeticiones entre trimestres, esa situación no se observa aquí. No se eliminarán registros solo por compartir identificador.
 
-La documentación presenta posibles problemas: abundantes ausencias y valores poco plausibles en el año de construcción declarado, cantidades extremas de habitaciones y distancias que requieren revisión geográfica. Estas observaciones son indicios documentados, todavía no resultados de una auditoría propia.
+Los nulos son: `CONSTRUCTIONYEAR`, 55.873 (58,93 %); `FLATLOCATIONID`, 6.387 (6,74 %); `FLOORCLEAN`, 3.846 (4,06 %); y `CADASTRALQUALITYID`, uno. `CADCONSTRUCTIONYEAR` no tiene nulos y se evaluará como alternativa al año declarado. Una fecha anterior a 1800 puede corresponder a un edificio histórico.
 
-El tratamiento previsto será:
+Se comprobó que `geometry` coincide con longitud y latitud en todas las filas, por lo que la exportación tabular prescinde de ella. Se detectó un registro con coordenadas a unos 415 km del centro y combinaciones muy poco plausibles de superficie y dormitorios. Se documentará su tratamiento antes de limpiar. Los filtros exploratorios no son reglas automáticas de exclusión.
 
-- Conservar una copia original y registrar cada transformación.
-- Interpretar `PERIOD` como trimestre, sin inventar fechas exactas de publicación.
-- Distinguir duplicados exactos de apariciones repetidas de una vivienda.
-- Validar superficies, precios, habitaciones, coordenadas y distancias.
-- Convertir indicadores y códigos en categorías comprensibles.
-- Evaluar el año catastral como alternativa al año declarado.
-- Documentar las exclusiones y su efecto sobre la muestra.
+El diccionario define dormitorios, categorías de equipamiento y distancias al centro en kilómetros, pero no resuelve todas las anomalías del aparcamiento ni los códigos extremos de planta. Además, contiene una cifra de 156.016 registros y 57 variables junto a otra de 94.815 y 42; se adopta la comprobada al cargar, coincidente con el README.
 
-Los valores extremos no se eliminarán automáticamente. Se distinguirán errores de viviendas excepcionales. Las coordenadas se tratarán como aproximadas, pues la fuente informa de perturbaciones para anonimizar los datos.
+La limpieza definitiva sigue pendiente: conservará el original, registrará las transformaciones y cuantificará su efecto. El notebook es evidencia de auditoría inicial, no de datos ya depurados.
 
-## 5. Hipótesis de negocio
+## 5. Hipótesis priorizadas
 
-Se priorizan las hipótesis por su utilidad para seleccionar comparables y revisar valoraciones.
+H1 y H2 tienen prioridad por su utilidad para seleccionar comparables; H3 y H4 refinan la comparación. Las pruebas describirán asociaciones, no causalidad.
 
-| Prioridad e hipótesis | Métrica y dirección esperada | Comprobación | Acción según resultado |
+| Hipótesis | Métrica y dirección esperada | Prueba prevista | Si se cumple / si no se cumple |
 |---|---|---|---|
-| H1. Una mayor distancia al centro se asocia con menor precio por m² | Mediana de `UNITPRICE` por tramo de distancia; relación negativa | Dispersión, correlación de Spearman y comparación por superficie | Si se cumple, incorporar distancia en los comparables; si no, revisar otras dimensiones de localización |
-| H2. Las viviendas de mayor superficie presentan menor precio por m² | Mediana de `UNITPRICE` por intervalo de superficie; descenso esperado | Diagramas de caja y Spearman, considerando localización | Si se cumple, comparar por tamaño; si no, reducir el peso de esta segmentación |
-| H3. Disponer de ascensor se asocia con mayor precio por m², especialmente en plantas altas | Diferencia de medianas entre viviendas con y sin ascensor por planta; positiva | Tabla agrupada y diagramas de caja | Si se cumple, segmentar por planta y ascensor; si no, evitar aplicar un ajuste general |
-| H4. Disponer de terraza se asocia con mayor precio por m² | Diferencia de medianas con y sin terraza dentro de grupos comparables; positiva | Barras y diagramas de caja por tamaño y localización | Si se cumple, incluir terraza en la comparación; si no, no asumir una prima sistemática |
+| H1. Mayor distancia al centro se asocia con menor precio por m² | Mediana de `UNITPRICE` por tramo de distancia; relación negativa | Dispersión y Spearman, comparando grupos de superficie | Incorporar distancia a los comparables / revisar otras variables de localización |
+| H2. Mayor superficie se asocia con menor precio por m² | Mediana por intervalo de superficie; descenso esperado | Cajas y Spearman, considerando localización | Segmentar por superficie / reducir el peso de esa segmentación |
+| H3. El ascensor se asocia con mayor precio por m², especialmente en plantas altas | Mediana con ascensor menos mediana sin ascensor, por planta; diferencia positiva | Tablas y cajas con tamaño de grupo, controlando superficie y localización | Incorporar el ajuste por planta y ascensor / evitar una prima general |
+| H4. La terraza se asocia con mayor precio por m² | Mediana con terraza menos mediana sin terraza; diferencia positiva | Comparación por tamaño y localización | Incluir terraza en los comparables / no asumir una prima sistemática |
 
-Estas pruebas describirán asociaciones. No demostrarán que una característica cause una diferencia de precio.
+La exploración de H3 muestra pocos registros sin ascensor en plantas altas: nueve filas desde la planta 7. No se considerará confirmada la hipótesis sin evaluar comparabilidad y suficiencia de los grupos.
 
-## 6. Indicadores clave
+## 6. KPIs del dashboard
 
-| KPI | Definición | Grano y comparación | Objetivo |
-|---|---|---|---|
-| Precio típico por m² | Mediana de `UNITPRICE` | Segmento y trimestre | Referencia de comparación; sin umbral universal |
-| Dispersión del precio | Percentil 75 menos percentil 25 de `UNITPRICE` | Segmento y trimestre | Identificar grupos heterogéneos |
-| Viviendas disponibles en la muestra | Recuento distinto de `ASSETID` | Segmento y trimestre | Mostrar el respaldo de cada comparación |
-| Diferencia asociada al ascensor | Mediana con ascensor menos mediana sin ascensor | Grupos de planta, tamaño y localización | Evaluar H3; sin prima prefijada |
+| KPI y cálculo | Grano y comparación | Objetivo o criterio |
+|---|---|---|
+| Precio típico: mediana de `UNITPRICE` | Segmento × trimestre; comparar tamaño y localización | Referencia descriptiva, sin umbral universal |
+| Dispersión: percentil 75 − percentil 25 de `UNITPRICE` | Segmento × trimestre | Identificar comparaciones heterogéneas |
+| Cobertura: número distinto de `ASSETID` | Segmento × trimestre | Señalar grupos con menos de 30 inmuebles; regla provisional a revisar |
+| Diferencia por ascensor: mediana con ascensor − mediana sin él | Planta, tamaño, localización y trimestre | Contrastar H3, sin prima prefijada |
+| Desviación del anuncio: 100 × (€/m² anunciado − referencia) / referencia | Registro de anuncio frente a mediana de comparables del mismo trimestre | Ordenar por desviación absoluta para revisión humana; umbral pendiente de validación |
 
-Se mostrará el tamaño de cada grupo junto con sus resultados. Como regla provisional de visualización, se señalarán los grupos con menos de 30 viviendas; este umbral se revisará tras explorar la distribución.
+Los grupos de comparables se definirán mediante filtros explícitos de superficie, localización y características. Se mostrará su cobertura. Una segmentación más precisa reduce la muestra: habrá que equilibrar semejanza y estabilidad. Las repeticiones pueden influir en medianas, aunque la cobertura cuente identificadores distintos; se evaluará ese efecto antes del dashboard final. No se fijarán objetivos de ahorro sin medición.
 
-## 7. Solución analítica
+## 7. Solución y arquitectura
 
-El dashboard incluirá una vista general de precios y cobertura, comparaciones por características y una vista de localización. Tendrá filtros de trimestre, superficie, habitaciones, terraza y ascensor.
+**Entradas:** tabla validada y filtros de trimestre, superficie, dormitorios, terraza y ascensor. **Lógica:** medianas, dispersión, cobertura y desviación frente a comparables. **Salidas:** indicadores, gráficos, tabla de anuncios para revisión y vista de localización aproximada.
 
-Las entradas serán los datos depurados y los filtros del usuario. La lógica calculará medianas, dispersión y recuentos. Las salidas serán gráficos, indicadores y tablas de comparables.
-
-El modelo utilizará características físicas y de localización para predecir `UNITPRICE`. Se excluirá `PRICE` de las variables explicativas porque permite reconstruir el objetivo junto con la superficie y produciría fuga de información.
-
-Se comparará un modelo sencillo con una referencia basada en la mediana. La evaluación utilizará error absoluto medio en €/m². La separación de entrenamiento y evaluación controlará la repetición de inmuebles; si se evalúa predicción temporal, se reservará el último trimestre y se explicará cómo se manejan viviendas repetidas. No se anticipan resultados de rendimiento.
-
-## 8. Arquitectura y herramientas
+El dashboard es prioritario frente a una aplicación completa por su menor complejidad. Posteriormente, un modelo estimará `UNITPRICE` con características físicas y geográficas. Se excluirá `PRICE` como predictor: la exploración confirma que, junto con superficie, reconstruye exactamente el objetivo. El identificador servirá para controlar repeticiones, no como característica predictiva.
 
 ```mermaid
 flowchart TD
-    A["Madrid_Sale: archivo original"] --> B["Ingesta y conversión"]
+    A["Fuente histórica RDA"] --> B["Ingesta y exportación CSV"]
     B --> C["Validación y limpieza"]
     C --> D["Tabla analítica"]
-    D --> E["Indicadores y modelo"]
+    D --> E["KPIs y futuro modelo"]
     E --> F["Dashboard"]
     F --> G["Responsable de valoraciones"]
 ```
 
 | Capa | Función y herramienta | Actualización |
 |---|---|---|
-| Fuente | Conservar RDA y referencia de versión | Descarga inicial |
-| Ingesta | Lectura y conversión con R o Python | Al cambiar la fuente |
-| Limpieza | Validaciones y transformaciones con pandas | En cada ejecución |
-| Modelo de datos | Tabla depurada en Parquet y exportación CSV | Tras validar |
-| Analítica | Estadística y modelo con Python | Tras actualizar datos |
-| Visualización | Dashboard en Power BI | Tras exportar resultados |
-| Documentación | Código, decisiones y fuentes en GitHub | Con cada cambio |
+| Fuente | Archivo original y commit de GitHub | Descarga de versión fijada |
+| Ingesta | Lectura con `rdata`; exportación con pandas | Al reconstruir los datos |
+| Limpieza y calidad | Validaciones y registro de cambios con pandas | En cada ejecución |
+| Modelo de datos | Tabla tabular CSV; Parquet si se necesita | Tras validar transformaciones |
+| Analítica | KPIs y futuro modelo en Python | Tras actualizar la tabla |
+| Dashboard | Power BI con filtros y comparables | Tras exportar resultados |
 
-La estructura se mantendrá sencilla porque se trabaja con una fuente histórica de tamaño manejable. No se necesita una base de datos ni una infraestructura de actualización continua.
+## 8. Mantenimiento, riesgos y límites
 
-## 9. Mantenimiento, riesgos y límites
+El autor mantendrá código, datos y documentación. El brief estará en `project/`, el notebook de apoyo en la raíz y los datos generados en `project/data/`. La descarga se reconstruirá desde la versión fijada. Se detendrá el proceso ante cambios incompatibles de columnas o tipos.
 
-El autor del proyecto será responsable de la preparación, validación y documentación. El código se organizará en `notebooks/` y `src/`, la documentación en `project/` y los datos locales en `data/raw/` y `data/processed/`.
+La consulta semanal describe el uso hipotético del responsable; la fuente histórica no tendrá actualización semanal. El prototipo se refrescará cuando se revisen las transformaciones. Una tabla basta para este volumen; no se justifica mantener una base de datos.
 
-Si cambia el formato de entrada, las comprobaciones de columnas y tipos detendrán el procesamiento para revisar la compatibilidad.
+Los principales riesgos son cobertura parcial de una plataforma, calidad y repetición de registros, y desfase temporal. El último trimestre concentra el 46,7 % de las filas; las diferencias entre trimestres pueden reflejar cambios de composición. Un único año limita las conclusiones sobre estacionalidad.
 
-Los principales riesgos son:
+La fuente informa de perturbaciones de precios y coordenadas para anonimizar. No se intentará identificar propietarios ni publicar direcciones exactas. Se mantendrá la atribución y se comprobarán las condiciones ODbL al redistribuir datos derivados. El máximo observado cercano a 10.000 €/m² sugiere una posible limitación del segmento alto, pero no demuestra un filtro. Las recomendaciones conservarán revisión humana y explicaciones de cobertura.
 
-1. **Sesgo de cobertura:** los anuncios de la plataforma no representan todas las viviendas ni todas las ventas.
-2. **Calidad y repetición:** errores y apariciones reiteradas pueden distorsionar los resultados y la evaluación.
-3. **Desfase temporal:** los datos de 2018 no permiten recomendar precios actuales.
+## 9. Fuentes y evidencias
 
-Se respetarán la atribución y las condiciones de la licencia. No se intentará identificar propietarios ni interpretar coordenadas aproximadas como direcciones exactas.
-
-## 10. Referencias
-
-- Dataset y diccionario: https://github.com/paezha/idealista18
-- Licencia: https://opendatacommons.org/licenses/odbl/1-0/
-- Artículo asociado: https://doi.org/10.1177/23998083241242844
-- Materiales de las sesiones 2–5: adquisición, calidad, análisis exploratorio y preparación de variables.
-
-## Notebook de apoyo
-
-La carga de los datos y la revisión inicial de su calidad están
-documentadas en [exploracion_madrid.ipynb](../exploracion_madrid.ipynb).
-
-Incluye la procedencia, las dimensiones del dataset, los periodos
-disponibles y comprobaciones de valores ausentes, identificadores
-repetidos y posibles anomalías.
-
-La limpieza definitiva todavía está pendiente.
+- [Dataset, licencia declarada y descripción general](https://github.com/paezha/idealista18/tree/e9ef80618f8a9cc28f672ac138f298bbd519918e).
+- [Diccionario de Madrid_Sale](https://github.com/paezha/idealista18/blob/e9ef80618f8a9cc28f672ac138f298bbd519918e/man/Madrid_Sale.Rd).
+- [Licencia ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/).
+- Rey-Blanco, D., Arbues, P., Lopez, F. y Paez, A. *A geo-referenced micro-data set of real estate listings for Spain’s three largest cities*. [Artículo asociado](https://doi.org/10.1177/23998083241242844).
+- Enunciado docente: *The end-to-end project: brief for the dashboard session (session 7)*, `PROJECT_BRIEF.md`.
+- [Notebook con resultados de exploración](../exploracion_madrid.ipynb).
